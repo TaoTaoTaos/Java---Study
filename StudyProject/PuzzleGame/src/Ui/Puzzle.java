@@ -6,6 +6,8 @@ import java.awt.event.MouseListener;
 
 
 public class Puzzle extends JFrame implements MouseListener {
+
+
     private final int number;//拼图编号
     private int sign;//拼图标识 ： 0 代表普通拼图 ， 1 代表空白的那块特殊拼图
     private int x_location;//拼图 x 坐标
@@ -25,6 +27,7 @@ public class Puzzle extends JFrame implements MouseListener {
             @Override
             public void mouseClicked(MouseEvent e) {
                 System.out.println(x_location + " ， " + y_location + "被点击");
+
 
             }
 

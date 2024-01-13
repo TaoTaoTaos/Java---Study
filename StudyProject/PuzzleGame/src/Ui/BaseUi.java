@@ -1,8 +1,6 @@
 package Ui;
 
 import javax.swing.*;
-import javax.swing.event.MenuKeyEvent;
-import javax.swing.event.MenuKeyListener;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -12,10 +10,20 @@ import java.util.Random;
 
 public class BaseUi extends JFrame implements MouseListener, ActionListener {
 
-    Puzzle[][] All_puzzles = new Puzzle[3][3];
 
-    //一个 3*3 的二维数组， 存放所有拼图
-    //数组里全是 Puzzle
+    private Puzzle[][] All_puzzles = new Puzzle[3][3];
+
+    /* All_puzzles：
+    一个 3*3 的二维数组， 存放所有拼图
+    数组里全是 Puzzle */
+
+    public Puzzle[][] getAll_puzzles() {
+        return All_puzzles;
+    }
+
+    public void setAll_puzzles(Puzzle[][] all_puzzles) {
+        All_puzzles = all_puzzles;
+    }
 
     public BaseUi() {
 
