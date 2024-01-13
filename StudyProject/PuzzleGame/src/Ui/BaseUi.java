@@ -1,11 +1,16 @@
 package Ui;
 
 import javax.swing.*;
+import javax.swing.event.MenuKeyEvent;
+import javax.swing.event.MenuKeyListener;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.util.Random;
 
-public class BaseUi extends JFrame implements MouseListener {
+public class BaseUi extends JFrame implements MouseListener, ActionListener {
 
     Puzzle[][] All_puzzles = new Puzzle[3][3];
 
@@ -18,8 +23,9 @@ public class BaseUi extends JFrame implements MouseListener {
         initPuzzle();//初始化拼图
         JMenuBar();//基础界面的菜单栏
 
+        this.setVisible(true);//设置可见
 
-        this.setVisible(true);//可见
+
     }
 
     private void initPuzzle() {
@@ -49,9 +55,7 @@ public class BaseUi extends JFrame implements MouseListener {
             }
         }
 
-
     }
-
 
     private void JMenuBar() {
         JMenuBar jMenuBar = new JMenuBar();//大菜单
@@ -65,6 +69,23 @@ public class BaseUi extends JFrame implements MouseListener {
         JMenuItem nextP_2 = new JMenuItem("更换图片");    //条目2
         JMenuItem Restart_3 = new JMenuItem("重新开始");    //条目3
 
+        //条目1 绑定事件
+        random_1.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                System.out.println("item1被点了");
+
+                Random_Puzzle(All_puzzles);//打乱拼图数组元素
+
+                for (int i = 0; i < 3; i++)//重新绘制 （setBound）
+                {
+                    for (int j = 0; j < 3; j++) {
+                        All_puzzles[i][j].getLabel().setBounds(1 + (134 * j), 134 * i, 134, 134);
+                        add(All_puzzles[i][j].getLabel());
+                    }
+                }
+            }
+        });
 
         jMenu1.add(random_1);//把 条目1 加到第一个选项
         jMenu1.add(nextP_2);//把 条目2 加到第一个选项
@@ -75,7 +96,6 @@ public class BaseUi extends JFrame implements MouseListener {
 
         this.setJMenuBar(jMenuBar);//把上面的东西 设置给 this
     }
-
 
     private void initFace() {
 
@@ -98,7 +118,33 @@ public class BaseUi extends JFrame implements MouseListener {
 
     }
 
+    public boolean IsCloseStar(Puzzle puzzle1, Puzzle puzzle2) {
+        if (puzzle1.getX_location() - puzzle2.getX_location() == 1 && puzzle1.getY_location() - puzzle2.getY_location() == 1
+                && (puzzle1.getSign() == 1 || puzzle2.getSign() == 1)) {
+            return true;
+        } else {
+            return false;
+        }
+    }
 
+    public void Random_Puzzle(Puzzle[][] puzzles) {//用于打乱二维数组里的拼图元素
+        Random mr = new Random();
+
+        for (int i = 0; i < 3; i++) {
+            for (int j = 0; j < 3; j++) {
+                int x = mr.nextInt(3);
+                int y = mr.nextInt(3);
+
+                Puzzle tempPuzzle = puzzles[i][j];
+                puzzles[i][j] = puzzles[x][y];
+                puzzles[x][y] = tempPuzzle;
+
+            }
+        }
+    }
+
+
+    //=====================================================================================
     @Override
     public void mouseClicked(MouseEvent e) {
 
@@ -121,6 +167,11 @@ public class BaseUi extends JFrame implements MouseListener {
 
     @Override
     public void mouseExited(MouseEvent e) {
+
+    }
+
+    @Override
+    public void actionPerformed(ActionEvent e) {
 
     }
 }

@@ -104,14 +104,7 @@ public class Puzzle extends JFrame implements MouseListener {
         System.out.println("===============================================");
     }
 
-    public boolean IsClose(Puzzle puzzle1, Puzzle puzzle2) {
-        if (puzzle1.getX_location() - puzzle2.getX_location() == 1 && puzzle1.getY_location() - puzzle2.getY_location() == 1) {
-            return true;
-        } else {
-            return false;
-        }
-    }
-
+    //===========================================================================================================
     @Override
     public void mouseClicked(MouseEvent e) {
 
