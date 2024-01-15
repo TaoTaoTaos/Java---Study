@@ -8,16 +8,16 @@ import java.awt.event.MouseListener;
 public class Puzzle extends JFrame implements MouseListener {
 
     private Puzzle[][] puzzles;//由于拼图要知道 自己 与 相邻的拼图 的位置关系，所有每块拼图都记录着当前的 【拼图布局】
-    private final int number;//拼图编号
+    private final int number;//拼图【编号】
     private int sign;//拼图标识 ： 0 代表【普通拼图】 ， 1 代表空白的那块【特殊拼图】
-    private final int init_x_location;//拼图初始 x 坐标
-    private final int init_y_location;//拼图初始 y 坐标
+    private final int init_x_location;//拼图【初始】 x 坐标
+    private final int init_y_location;//拼图【初始】 y 坐标
 
-    private int x_location;//实时 x 坐标
-    private int y_location;//实时 y 坐标
-    private final ImageIcon image;//拼图图片
+    private int x_location;//【实时】 x 坐标
+    private int y_location;//【实时】 y 坐标
+    private final ImageIcon image;//拼图【图片】
 
-    private final Puzzle self;
+    private final Puzzle self;//为了调用【拼图自己】
     private final JLabel label;
 
 
@@ -36,20 +36,21 @@ public class Puzzle extends JFrame implements MouseListener {
 
                 Puzzle leftPuzzle = null, rightPuzzle = null, upPuzzle = null, downPuzzle = null;//初始化上下左右都是空的
 
-                //注意：x，y坐标是从1，1开始
-                //      数组坐标是从0,0开始
-                if (y_location > 1) {//列数 大于 1 才有 左
-                    leftPuzzle = puzzles[x_location - 1][y_location - 2];
-                }
-                if (y_location < 3) {//列数 小于 3 才有右
-                    rightPuzzle = puzzles[x_location - 1][y_location];
-                }
-                if (x_location > 1) {//行数 大于 1 才有 上
+                //注意：【x，y】坐标是从1，1开始
+                //      【数组】坐标是从0,0开始
+                if (x_location > 1) {//行数 大于 1 才有 【上】
                     upPuzzle = puzzles[x_location - 2][y_location - 1];
                 }
-                if (x_location < 3) {//行数 小于 3 才有 下
+                if (x_location < 3) {//行数 小于 3 才有 【下】
                     downPuzzle = puzzles[x_location][y_location - 1];
                 }
+                if (y_location > 1) {//列数 大于 1 才有 【左】
+                    leftPuzzle = puzzles[x_location - 1][y_location - 2];
+                }
+                if (y_location < 3) {//列数 小于 3 才有 【右】
+                    rightPuzzle = puzzles[x_location - 1][y_location];
+                }
+
 
                 //被点击拼图显示信息
                 System.out.println("=================================");
@@ -58,7 +59,7 @@ public class Puzzle extends JFrame implements MouseListener {
                 System.out.println("初始坐标   ：" + init_x_location + " ， " + init_y_location);
                 System.out.println("目前的坐标为：" + x_location + " ， " + y_location);
                 System.out.println("———————————————————");
-                //打印相邻拼图的信息
+                //打印【相邻拼图】的信息
                 if (upPuzzle != null) {
                     System.out.println("上边拼图的编号 ：" + upPuzzle.number);
                 }
@@ -87,7 +88,6 @@ public class Puzzle extends JFrame implements MouseListener {
                 }
 
             }
-
 
             @Override
             public void mousePressed(MouseEvent e) {
@@ -198,7 +198,7 @@ public class Puzzle extends JFrame implements MouseListener {
 
     }//交换两块拼图的【位置】
 
-    //===========================================================================================================
+    //=============================================================================================
     @Override
     public void mouseClicked(MouseEvent e) {
     }
