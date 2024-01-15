@@ -7,18 +7,18 @@ import java.awt.event.MouseListener;
 
 public class Puzzle extends JFrame implements MouseListener {
 
-    private Puzzle[][] puzzles;//由于拼图要知道 自己 与 相邻的拼图 的位置关系，所有每块拼图都记录着当前的 拼图布局。
+    private Puzzle[][] puzzles;//由于拼图要知道 自己 与 相邻的拼图 的位置关系，所有每块拼图都记录着当前的 【拼图布局】
     private final int number;//拼图编号
-    private int sign;//拼图标识 ： 0 代表普通拼图 ， 1 代表空白的那块特殊拼图
-    private int init_x_location;//拼图初始 x 坐标
-    private int init_y_location;//拼图初始 y 坐标
+    private int sign;//拼图标识 ： 0 代表【普通拼图】 ， 1 代表空白的那块【特殊拼图】
+    private final int init_x_location;//拼图初始 x 坐标
+    private final int init_y_location;//拼图初始 y 坐标
 
     private int x_location;//实时 x 坐标
     private int y_location;//实时 y 坐标
-    private ImageIcon image;//拼图图片
+    private final ImageIcon image;//拼图图片
 
-    private Puzzle self;
-    private JLabel label;
+    private final Puzzle self;
+    private final JLabel label;
 
 
     public Puzzle(int number, int init_x_location, int init_y_location, ImageIcon image, JLabel label) {
@@ -151,16 +151,9 @@ public class Puzzle extends JFrame implements MouseListener {
         return init_x_location;
     }
 
-    public void setInit_x_location(int init_x_location) {
-        this.init_x_location = init_x_location;
-    }
 
     public int getInit_y_location() {
         return init_y_location;
-    }
-
-    public void setInit_y_location(int init_y_location) {
-        this.init_y_location = init_y_location;
     }
 
 
@@ -173,11 +166,8 @@ public class Puzzle extends JFrame implements MouseListener {
         return label;
     }
 
-    public void setLabel(JLabel label) {
-        this.label = label;
-    }
 
-    public void show() {
+    public void show_puzzle() {
         System.out.println("===============================================");
         System.out.println("拼图编号：" + this.getNumber());
         System.out.println("拼图标识：" + this.getSign());
@@ -187,8 +177,7 @@ public class Puzzle extends JFrame implements MouseListener {
         System.out.println("拼图图片：" + this.getImage());
         System.out.println("拼图容器：" + this.getLabel());
         System.out.println("===============================================");
-    }
-
+    }//展示拼图【信息】
 
     private void swapPuzzles(Puzzle p1, Puzzle p2) {
         // 交换拼图 的 【实时位置】
@@ -207,12 +196,11 @@ public class Puzzle extends JFrame implements MouseListener {
         p1.getLabel().setBounds(1 + (134 * (p1.y_location - 1)), 134 * (p1.x_location - 1), 134, 134);
         p2.getLabel().setBounds(1 + (134 * (p2.y_location - 1)), 134 * (p2.x_location - 1), 134, 134);
 
-    }
+    }//交换两块拼图的【位置】
 
     //===========================================================================================================
     @Override
     public void mouseClicked(MouseEvent e) {
-
     }
 
     @Override

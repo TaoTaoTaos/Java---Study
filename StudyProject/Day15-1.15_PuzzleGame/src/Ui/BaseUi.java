@@ -1,6 +1,7 @@
 package Ui;
 
 import javax.swing.*;
+import javax.swing.border.BevelBorder;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -10,25 +11,27 @@ import java.util.Random;
 
 public class BaseUi extends JFrame implements MouseListener, ActionListener {
 
+    // All_puzzles：
+    //一个 3*3 的二维数组， 存放所有拼图的【布局】
+    //数组里全是 Puzzle
 
     private Puzzle[][] All_puzzles = new Puzzle[3][3];
 
-    /* All_puzzles：
-    一个 3*3 的二维数组， 存放所有拼图
-    数组里全是 Puzzle */
 
-    public Puzzle[][] getAll_puzzles() {
-        return All_puzzles;
-    }
+    //PATH数组，用来存储图片路径
+    public String[] PATHS = {
+            "C:\\Users\\Lijintao\\Desktop\\Java - Study\\StudyProject\\Day15-1.15_PuzzleGame\\Pictrue\\400x400\\",
+            "C:\\Users\\Lijintao\\Desktop\\Java - Study\\StudyProject\\Day15-1.15_PuzzleGame\\Pictrue\\0_400x400\\"
+    };
 
-    public void setAll_puzzles(Puzzle[][] all_puzzles) {
-        All_puzzles = all_puzzles;
-    }
+    //mode代表图片
+    public int mode;
 
     public BaseUi() {
 
         initFace();//初始化界面
-        initPuzzle();//初始化拼图
+        mode = 0;//默认选第一张图片
+        initPuzzle(PATHS[mode]);//初始化拼图
         JMenuBar();//基础界面的菜单栏
 
         this.setVisible(true);//设置可见
@@ -36,14 +39,16 @@ public class BaseUi extends JFrame implements MouseListener, ActionListener {
 
     }
 
-    private void initPuzzle() {
+    private void initPuzzle(String s) {
 
         //初始化 9 张拼图 ，其中第 9 张 是空白拼图
+
         int num = 0;//拼图编号
         for (int i = 0; i < 3; i++) {
             for (int j = 0; j < 3; j++) {
 
-                ImageIcon image = new ImageIcon("C:\\Users\\Lijintao\\Desktop\\Java - Study\\StudyProject\\PuzzleGame\\Pictrue\\400x400\\" + (++num) + ".jpg");
+
+                ImageIcon image = new ImageIcon(s + (++num) + ".jpg");
 
                 JLabel label = new JLabel(image);
 
@@ -61,9 +66,10 @@ public class BaseUi extends JFrame implements MouseListener, ActionListener {
                     All_puzzles[i][j].setSign(0);
                 }
 
+                All_puzzles[i][j].getLabel().setBorder(new BevelBorder(BevelBorder.RAISED));//每块拼图加个边框
 
                 this.add(All_puzzles[i][j].getLabel());
-                All_puzzles[i][j].show(); //生成 puzzles 时 ，puzzle 【i，j】会展示一次自己的信息
+                All_puzzles[i][j].show_puzzle(); //生成 puzzles 时 ，puzzle 【i，j】会展示一次自己的信息
             }
         }
         //把初始化好的拼图信息存入每块拼图
@@ -92,6 +98,52 @@ public class BaseUi extends JFrame implements MouseListener, ActionListener {
             public void actionPerformed(ActionEvent e) {
                 System.out.println("点击了打乱拼图按钮");
                 Random_Puzzle(All_puzzles);//打乱拼图数组元素
+            }
+        });
+
+        nextP_2.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                System.out.println("点击了更换图片按钮");
+                //要把 label 先删除了
+                for (int i = 0; i < 3; i++) {
+                    for (int j = 0; j < 3; j++) {
+                        remove(All_puzzles[i][j].getLabel());
+                    }
+                }
+
+                //切换图片mode
+                if (mode == 1) {
+                    mode = 0;
+                } else if (mode == 0) {
+                    mode = 1;
+                }
+
+                // 初始化新的拼图
+                initPuzzle(PATHS[mode]);
+
+                // 更新界面
+                revalidate();
+                repaint();
+
+            }
+        });
+        Restart_3.addActionListener(new ActionListener() {
+            @Override
+
+            public void actionPerformed(ActionEvent e) {
+                System.out.println("点击了重新开始按钮");
+                //要把 label 先删除了
+                for (int i = 0; i < 3; i++) {
+                    for (int j = 0; j < 3; j++) {
+                        remove(All_puzzles[i][j].getLabel());
+                    }
+                }
+                // 初始化新的拼图
+                initPuzzle(PATHS[mode]);
+                // 更新界面
+                revalidate();
+                repaint();
             }
         });
 
@@ -161,7 +213,7 @@ public class BaseUi extends JFrame implements MouseListener, ActionListener {
             }
         }
         System.out.println("拼图数组已打乱");
-    }//打乱【布局数组】
+    }  //打乱【布局数组】
 
 
     //=====================================================================================
