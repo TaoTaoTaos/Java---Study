@@ -66,6 +66,7 @@ public class BaseUi extends JFrame implements MouseListener, ActionListener {
                 All_puzzles[i][j].show(); //生成 puzzles 时 ，puzzle 【i，j】会展示一次自己的信息
             }
         }
+        //把初始化好的拼图信息存入每块拼图
         for (int i = 0; i < 3; i++) {
             for (int j = 0; j < 3; j++) {
                 All_puzzles[i][j].setPuzzles(All_puzzles);
@@ -90,16 +91,7 @@ public class BaseUi extends JFrame implements MouseListener, ActionListener {
             @Override
             public void actionPerformed(ActionEvent e) {
                 System.out.println("点击了打乱拼图按钮");
-
                 Random_Puzzle(All_puzzles);//打乱拼图数组元素
-
-                for (int i = 0; i < 3; i++)//重新绘制 （setBound）
-                {
-                    for (int j = 0; j < 3; j++) {
-                        All_puzzles[i][j].getLabel().setBounds(1 + (134 * j), 134 * i, 134, 134);
-                        add(All_puzzles[i][j].getLabel());
-                    }
-                }
             }
         });
 
@@ -110,8 +102,9 @@ public class BaseUi extends JFrame implements MouseListener, ActionListener {
         jMenuBar.add(jMenu1);//把 第一个选项 加到 大菜单
         jMenuBar.add(jMenu2);//把 第二个选项 加到 大菜单
 
-        this.setJMenuBar(jMenuBar);//把上面的东西 设置给 this
+        this.setJMenuBar(jMenuBar);//把上面的东西 设置给 【Ui】
     }
+
 
     private void initFace() {
 
@@ -132,17 +125,7 @@ public class BaseUi extends JFrame implements MouseListener, ActionListener {
         this.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);//设置关闭模式
 
 
-    }
-
-    public boolean IsCloseStar(Puzzle puzzle1, Puzzle puzzle2) {
-        if (puzzle1.getInit_x_location() - puzzle2.getInit_x_location() == 1 && puzzle1.getInit_y_location() - puzzle2.getInit_y_location() == 1
-                && (puzzle1.getSign() == 1 || puzzle2.getSign() == 1)) {
-            return true;
-        } else {
-            return false;
-        }
-    }
-
+    }//初始化界面设置
 
     public void Random_Puzzle(Puzzle[][] puzzles) {//用于打乱二维数组里的拼图元素
         Random mr = new Random();
@@ -170,7 +153,15 @@ public class BaseUi extends JFrame implements MouseListener, ActionListener {
                 puzzles[i][j].setPuzzles(puzzles);
             }
         }
-    }
+        for (int i = 0; i < 3; i++)//重新绘制 （setBound）
+        {
+            for (int j = 0; j < 3; j++) {
+                All_puzzles[i][j].getLabel().setBounds(1 + (134 * j), 134 * i, 134, 134);
+                add(All_puzzles[i][j].getLabel());
+            }
+        }
+        System.out.println("拼图数组已打乱");
+    }//打乱【布局数组】
 
 
     //=====================================================================================
