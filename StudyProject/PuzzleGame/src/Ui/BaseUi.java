@@ -47,7 +47,11 @@ public class BaseUi extends JFrame implements MouseListener, ActionListener {
 
                 JLabel label = new JLabel(image);
 
-                All_puzzles[i][j] = new Puzzle(num, i + 1, j + 1, image, label);
+                All_puzzles[i][j] = new Puzzle(num, i + 1, j + 1, image, label);//初始化所有拼图
+
+                All_puzzles[i][j].setX_location(i + 1);
+                All_puzzles[i][j].setY_location(j + 1);//拼图的 现在的位置 就是  初始位置
+
 
                 All_puzzles[i][j].getLabel().setBounds(1 + (134 * j), 134 * i, 134, 134);
 
@@ -57,12 +61,16 @@ public class BaseUi extends JFrame implements MouseListener, ActionListener {
                     All_puzzles[i][j].setSign(0);
                 }
 
-                this.add(All_puzzles[i][j].getLabel());
 
+                this.add(All_puzzles[i][j].getLabel());
                 All_puzzles[i][j].show(); //生成 puzzles 时 ，puzzle 【i，j】会展示一次自己的信息
             }
         }
-
+        for (int i = 0; i < 3; i++) {
+            for (int j = 0; j < 3; j++) {
+                All_puzzles[i][j].setPuzzles(All_puzzles);
+            }
+        }
     }
 
     private void JMenuBar() {
@@ -81,7 +89,7 @@ public class BaseUi extends JFrame implements MouseListener, ActionListener {
         random_1.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                System.out.println("item1被点了");
+                System.out.println("点击了打乱拼图按钮");
 
                 Random_Puzzle(All_puzzles);//打乱拼图数组元素
 
@@ -127,13 +135,14 @@ public class BaseUi extends JFrame implements MouseListener, ActionListener {
     }
 
     public boolean IsCloseStar(Puzzle puzzle1, Puzzle puzzle2) {
-        if (puzzle1.getX_location() - puzzle2.getX_location() == 1 && puzzle1.getY_location() - puzzle2.getY_location() == 1
+        if (puzzle1.getInit_x_location() - puzzle2.getInit_x_location() == 1 && puzzle1.getInit_y_location() - puzzle2.getInit_y_location() == 1
                 && (puzzle1.getSign() == 1 || puzzle2.getSign() == 1)) {
             return true;
         } else {
             return false;
         }
     }
+
 
     public void Random_Puzzle(Puzzle[][] puzzles) {//用于打乱二维数组里的拼图元素
         Random mr = new Random();
@@ -146,7 +155,19 @@ public class BaseUi extends JFrame implements MouseListener, ActionListener {
                 Puzzle tempPuzzle = puzzles[i][j];
                 puzzles[i][j] = puzzles[x][y];
                 puzzles[x][y] = tempPuzzle;
-
+            }
+        }
+        //写入 现在 的坐标
+        for (int i = 0; i < 3; i++) {
+            for (int j = 0; j < 3; j++) {
+                puzzles[i][j].setX_location(i + 1);
+                puzzles[i][j].setY_location(j + 1);
+            }
+        }
+        //把现在的拼图布局 给 每一块 拼图
+        for (int i = 0; i < 3; i++) {
+            for (int j = 0; j < 3; j++) {
+                puzzles[i][j].setPuzzles(puzzles);
             }
         }
     }
