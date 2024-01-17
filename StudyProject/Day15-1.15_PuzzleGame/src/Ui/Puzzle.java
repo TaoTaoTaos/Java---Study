@@ -32,12 +32,14 @@ public class Puzzle extends JFrame implements MouseListener {
             @Override
             public void mouseClicked(MouseEvent e) {
 
+
                 //点击后执行动作==========================================================================
 
-                Puzzle leftPuzzle = null, rightPuzzle = null, upPuzzle = null, downPuzzle = null;//初始化上下左右都是空的
+                //初始化上下左右都是空的
+                Puzzle leftPuzzle = null, rightPuzzle = null, upPuzzle = null, downPuzzle = null;
 
                 //注意：【x，y】坐标是从1，1开始
-                //      【数组】坐标是从0,0开始
+                //     【数组】坐标是从0,0开始
                 if (x_location > 1) {//行数 大于 1 才有 【上】
                     upPuzzle = puzzles[x_location - 2][y_location - 1];
                 }
@@ -50,7 +52,6 @@ public class Puzzle extends JFrame implements MouseListener {
                 if (y_location < 3) {//列数 小于 3 才有 【右】
                     rightPuzzle = puzzles[x_location - 1][y_location];
                 }
-
 
                 //被点击拼图显示信息
                 System.out.println("=================================");
@@ -179,7 +180,8 @@ public class Puzzle extends JFrame implements MouseListener {
         System.out.println("===============================================");
     }//展示拼图【信息】
 
-    private void swapPuzzles(Puzzle p1, Puzzle p2) {
+    public void swapPuzzles(Puzzle p1, Puzzle p2) {
+
         // 交换拼图 的 【实时位置】
         int tempX = p1.x_location;
         int tempY = p1.y_location;
@@ -195,7 +197,24 @@ public class Puzzle extends JFrame implements MouseListener {
         //交换 拼图 的 label 的 bound ，即交换 【显示位置】
         p1.getLabel().setBounds(1 + (134 * (p1.y_location - 1)), 134 * (p1.x_location - 1), 134, 134);
         p2.getLabel().setBounds(1 + (134 * (p2.y_location - 1)), 134 * (p2.x_location - 1), 134, 134);
-
+        //每次交换后，检查是否复原了
+        boolean restored = true;
+        for (int i = 0; i < 3; i++) {
+            for (int j = 0; j < 3; j++) {
+                if (puzzles[i][j].getX_location() != puzzles[i][j].getInit_x_location() || puzzles[i][j].getY_location() != puzzles[i][j].getInit_y_location()) {
+                    restored = false;
+                    break;
+                }
+            }
+            if (!restored) {
+                break;
+            }
+        }
+        if (restored) {
+            System.out.println("已经复原");
+        } else {
+            System.out.println("还未复原");
+        }
     }//交换两块拼图的【位置】
 
     //=============================================================================================

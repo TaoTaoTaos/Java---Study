@@ -11,7 +11,7 @@ import java.util.Random;
 
 public class BaseUi extends JFrame implements MouseListener, ActionListener {
 
-    private Puzzle[][] All_puzzles = new Puzzle[3][3];    // All_puzzles：一个 3*3 的二维数组， 存放所有拼图的【布局】，数组里全是 Puzzle
+    private final Puzzle[][] All_puzzles = new Puzzle[3][3];    // All_puzzles：一个 3*3 的二维数组， 存放所有拼图的【布局】，数组里全是 Puzzle
 
     public String[] PATHS = {//PATH数组，用来存储图片路径
             "C:\\Users\\Lijintao\\Desktop\\Java - Study\\StudyProject\\Day15-1.15_PuzzleGame\\Pictrue\\400x400\\",
@@ -25,6 +25,8 @@ public class BaseUi extends JFrame implements MouseListener, ActionListener {
         initFace();//初始化界面
         mode = 0;//默认选第一张图片
         initPuzzle(PATHS[mode]);//初始化拼图（mode1）
+        Random_Puzzle(All_puzzles);
+
         JMenuBar();//基础界面的菜单栏
 
         this.setVisible(true);//设置可见
@@ -81,9 +83,9 @@ public class BaseUi extends JFrame implements MouseListener, ActionListener {
         JMenu jMenu2 = new JMenu("关于我");//第二个选项
 
 
-        JMenuItem random_1 = new JMenuItem("打乱拼图");//选项 里的 条目1
+        JMenuItem random_1 = new JMenuItem("重新打乱");//选项 里的 条目1
         JMenuItem nextP_2 = new JMenuItem("更换图片");    //条目2
-        JMenuItem Restart_3 = new JMenuItem("重新开始");    //条目3
+        JMenuItem Restart_3 = new JMenuItem("复原图片");    //条目3
 
 
         random_1.addActionListener(new ActionListener() {
@@ -93,7 +95,6 @@ public class BaseUi extends JFrame implements MouseListener, ActionListener {
                 Random_Puzzle(All_puzzles);//打乱拼图数组元素
             }
         });//条目1 事件
-
         nextP_2.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -114,7 +115,7 @@ public class BaseUi extends JFrame implements MouseListener, ActionListener {
 
                 // 初始化新的拼图
                 initPuzzle(PATHS[mode]);
-
+                Random_Puzzle(All_puzzles);
                 // 更新界面
                 revalidate();
                 repaint();
@@ -126,7 +127,7 @@ public class BaseUi extends JFrame implements MouseListener, ActionListener {
             @Override
 
             public void actionPerformed(ActionEvent e) {
-                System.out.println("点击了重新开始按钮");
+                System.out.println("点击了复原图片按钮");
                 //要把 label 先删除了
                 for (int i = 0; i < 3; i++) {
                     for (int j = 0; j < 3; j++) {
@@ -135,6 +136,7 @@ public class BaseUi extends JFrame implements MouseListener, ActionListener {
                 }
                 // 初始化新的拼图
                 initPuzzle(PATHS[mode]);
+
                 // 更新界面
                 revalidate();
                 repaint();
@@ -172,41 +174,107 @@ public class BaseUi extends JFrame implements MouseListener, ActionListener {
 
     }//初始化界面设置
 
-    public void Random_Puzzle(Puzzle[][] puzzles) {//用于打乱二维数组里的拼图元素
+
+    public void Random_Puzzle(Puzzle[][] puzzles) {
         Random mr = new Random();
 
-        for (int i = 0; i < 3; i++) {
-            for (int j = 0; j < 3; j++) {
-                int x = mr.nextInt(3);
-                int y = mr.nextInt(3);
+        //拼图游戏是有【死解】的
+        //通过交换与空白块相邻的块来打乱
+        //就避免了出现死解
+        for (int k = 0; k < 20; k++) {//找到 【空白块】 20次 并调换和他【与之相邻的块】
+            for (int i = 0; i < 3; i++) {
+                for (int j = 0; j < 3; j++) {//先找到空白块是哪一块
+                    if (puzzles[i][j].getSign() == 1) {
 
-                Puzzle tempPuzzle = puzzles[i][j];
-                puzzles[i][j] = puzzles[x][y];
-                puzzles[x][y] = tempPuzzle;
+                        Puzzle leftPuzzle = null, rightPuzzle = null, upPuzzle = null, downPuzzle = null;
+
+                        //注意：【x，y】坐标是从1，1开始
+                        //     【数组】坐标是从0,0开始
+
+                        if (puzzles[i][j].getX_location() > 1) {//行数 大于 1 才有 【上】
+                            upPuzzle = puzzles[puzzles[i][j].getX_location() - 2][puzzles[i][j].getY_location() - 1];
+                        }
+                        if (puzzles[i][j].getX_location() < 3) {//行数 小于 3 才有 【下】
+                            downPuzzle = puzzles[puzzles[i][j].getX_location()][puzzles[i][j].getY_location() - 1];
+                        }
+                        if (puzzles[i][j].getY_location() > 1) {//列数 大于 1 才有 【左】
+                            leftPuzzle = puzzles[puzzles[i][j].getX_location() - 1][puzzles[i][j].getY_location() - 2];
+                        }
+                        if (puzzles[i][j].getY_location() < 3) {//列数 小于 3 才有 【右】
+                            rightPuzzle = puzzles[puzzles[i][j].getX_location() - 1][puzzles[i][j].getY_location()];
+                        }
+
+                        //空白块与一个相邻块交换
+                        Puzzle[] neighbors = {leftPuzzle, rightPuzzle, upPuzzle, downPuzzle};
+
+                        int count = 0;
+                        Puzzle[] save = new Puzzle[4];
+
+                        for (Puzzle neighbor : neighbors) {
+                            if (neighbor != null) {
+                                save[count] = neighbor;
+                                count++;
+                            }
+                        }
+
+                        if (count > 0) {
+                            int x = mr.nextInt(count);
+                            swapPuzzles(puzzles[i][j], save[x], puzzles);
+                        }
+                    }
+                }
             }
+            // Reprint(puzzles);
+            revalidate();
+            repaint();
         }
+
         //写入 现在 的坐标
-        for (int i = 0; i < 3; i++) {
-            for (int j = 0; j < 3; j++) {
+        for (int i = 0; i < puzzles.length; i++) {
+            for (int j = 0; j < puzzles[0].length; j++) {
                 puzzles[i][j].setX_location(i + 1);
                 puzzles[i][j].setY_location(j + 1);
             }
         }
         //把现在的拼图布局 给 每一块 拼图
-        for (int i = 0; i < 3; i++) {
-            for (int j = 0; j < 3; j++) {
+        for (int i = 0; i < puzzles.length; i++) {
+            for (int j = 0; j < puzzles[0].length; j++) {
                 puzzles[i][j].setPuzzles(puzzles);
             }
         }
-        for (int i = 0; i < 3; i++)//重新绘制 （setBound）
+        Reprint(puzzles);
+        System.out.println("拼图数组已打乱");
+    }
+
+    private void Reprint(Puzzle[][] puzzles) {
+        for (int i = 0; i < puzzles.length; i++)//重新绘制 （setBound）
         {
-            for (int j = 0; j < 3; j++) {
+            for (int j = 0; j < puzzles[0].length; j++) {
                 All_puzzles[i][j].getLabel().setBounds(1 + (134 * j), 134 * i, 134, 134);
                 add(All_puzzles[i][j].getLabel());
             }
         }
-        System.out.println("拼图数组已打乱");
-    }  //打乱【布局数组】
+    }
+
+    public void swapPuzzles(Puzzle p1, Puzzle p2, Puzzle[][] puzzles) {
+
+        // 交换拼图 的 【实时位置】
+        int tempX = p1.getX_location();
+        int tempY = p1.getY_location();
+        p1.setX_location(p2.getX_location());
+        p1.setY_location(p2.getY_location());
+        p2.setX_location(tempX);
+        p2.setY_location(tempY);
+
+        // 交换拼图 的 【数组位置】
+        puzzles[p1.getX_location() - 1][p1.getY_location() - 1] = p1;
+        puzzles[p2.getX_location() - 1][p2.getY_location() - 1] = p2;
+
+        //交换 拼图 的 label 的 bound ，即交换 【显示位置】
+        p1.getLabel().setBounds(1 + (134 * (p1.getY_location() - 1)), 134 * (p1.getX_location() - 1), 134, 134);
+        p2.getLabel().setBounds(1 + (134 * (p2.getY_location() - 1)), 134 * (p2.getX_location() - 1), 134, 134);
+
+    }
 
     //=====================================================================================
     @Override
