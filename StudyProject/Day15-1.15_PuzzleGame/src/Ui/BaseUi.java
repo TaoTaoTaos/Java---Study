@@ -3,13 +3,14 @@ package Ui;
 import javax.swing.*;
 import javax.swing.border.BevelBorder;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
+import java.awt.event.*;
 import java.util.Random;
+import java.awt.event.KeyListener;
+import java.awt.EventQueue;
 
-public class BaseUi extends JFrame implements MouseListener, ActionListener {
+
+public class BaseUi extends JFrame implements MouseListener, ActionListener, KeyListener {
+
 
     private final Puzzle[][] All_puzzles = new Puzzle[3][3];    // All_puzzles：一个 3*3 的二维数组， 存放所有拼图的【布局】，数组里全是 Puzzle
 
@@ -18,6 +19,8 @@ public class BaseUi extends JFrame implements MouseListener, ActionListener {
             "C:\\Users\\Lijintao\\Desktop\\Java - Study\\StudyProject\\Day15-1.15_PuzzleGame\\Pictrue\\0_400x400\\"
     };
     public int mode;  //mode代表图片0,1,2...
+
+    JLabel all = new JLabel(new ImageIcon("C:\\Users\\Lijintao\\Desktop\\Java - Study\\StudyProject\\Day15-1.15_PuzzleGame\\Pictrue\\400x400\\all1.jpg"));
 
     //=====================================================================================
     public BaseUi() {
@@ -73,6 +76,8 @@ public class BaseUi extends JFrame implements MouseListener, ActionListener {
                 All_puzzles[i][j].setPuzzles(All_puzzles);
             }
         }
+
+
     }  //初始化 9 张拼图
 
     private void JMenuBar() {
@@ -166,10 +171,49 @@ public class BaseUi extends JFrame implements MouseListener, ActionListener {
         this.setVisible(true);
         this.setAlwaysOnTop(false);//置顶
         this.setTitle("小游戏");
+        //this.setSize(1000, 1000);
         this.setSize(419, 463);
         this.setLocationRelativeTo(null);//居中
         this.setResizable(false);//不可变大小
         this.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);//设置关闭模式
+        this.addKeyListener(new KeyListener() {
+            @Override
+            public void keyTyped(KeyEvent e) {
+
+            }
+
+            @Override
+            public void keyPressed(KeyEvent e) {
+                int code = e.getKeyCode();
+                if (code == 65) {
+                    System.out.println("A被按下");
+                    //清除所有拼图 label
+                    for (int i = 0; i < 3; i++) {
+                        for (int j = 0; j < 3; j++) {
+                            remove(All_puzzles[i][j].getLabel());
+                        }
+                    }
+
+
+                    all.setBounds(2, 2, 400, 400);
+                    add(all);
+                    revalidate();
+                    repaint();
+                }
+            }
+
+            @Override
+            public void keyReleased(KeyEvent e) {
+                int code = e.getKeyCode();
+                if (code == 65) {
+                    remove(all);
+                    System.out.println("A被松开");
+                    Reprint(All_puzzles);
+                    revalidate();
+                    repaint();
+                }
+            }
+        });
 
 
     }//初始化界面设置
@@ -181,7 +225,7 @@ public class BaseUi extends JFrame implements MouseListener, ActionListener {
         //拼图游戏是有【死解】的
         //通过交换与空白块相邻的块来打乱
         //就避免了出现死解
-        for (int k = 0; k < 20; k++) {//找到 【空白块】 20次 并调换和他【与之相邻的块】
+        for (int k = 0; k < 20; k++) {//找到 【空白块】 20次 并调换和他【与之相邻的块】 模拟手动移动了20步
             for (int i = 0; i < 3; i++) {
                 for (int j = 0; j < 3; j++) {//先找到空白块是哪一块
                     if (puzzles[i][j].getSign() == 1) {
@@ -285,6 +329,7 @@ public class BaseUi extends JFrame implements MouseListener, ActionListener {
     @Override
     public void mousePressed(MouseEvent e) {
 
+
     }
 
     @Override
@@ -304,6 +349,21 @@ public class BaseUi extends JFrame implements MouseListener, ActionListener {
 
     @Override
     public void actionPerformed(ActionEvent e) {
+
+    }
+
+    @Override
+    public void keyTyped(KeyEvent e) {
+
+    }
+
+    @Override
+    public void keyPressed(KeyEvent e) {
+
+    }
+
+    @Override
+    public void keyReleased(KeyEvent e) {
 
     }
 }

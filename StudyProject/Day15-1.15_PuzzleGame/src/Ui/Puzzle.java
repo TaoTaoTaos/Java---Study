@@ -3,10 +3,11 @@ package Ui;
 import javax.swing.*;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.util.concurrent.CountDownLatch;
 
 
 public class Puzzle extends JFrame implements MouseListener {
-
+    public int count;//拼图移动的次数
     private Puzzle[][] puzzles;//由于拼图要知道 自己 与 相邻的拼图 的位置关系，所有每块拼图都记录着当前的 【拼图布局】
     private final int number;//拼图【编号】
     private int sign;//拼图标识 ： 0 代表【普通拼图】 ， 1 代表空白的那块【特殊拼图】
@@ -157,6 +158,13 @@ public class Puzzle extends JFrame implements MouseListener {
         return init_y_location;
     }
 
+    public int getCount() {
+        return count;
+    }
+
+    public void setCount(int count) {
+        this.count = count;
+    }
 
     public ImageIcon getImage() {
         return image;
@@ -182,6 +190,11 @@ public class Puzzle extends JFrame implements MouseListener {
 
     public void swapPuzzles(Puzzle p1, Puzzle p2) {
 
+        for (int i = 0; i < 3; i++) {
+            for (int j = 0; j < 3; j++) {
+                puzzles[i][j].setCount(count++);
+            }
+        }
         // 交换拼图 的 【实时位置】
         int tempX = p1.x_location;
         int tempY = p1.y_location;
